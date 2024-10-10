@@ -11,17 +11,7 @@ import java.util.*;
 
 public class BlockBFS {
     
-    static World world;
-    static BlockPos initial;
-    
-    public BlockBFS() { }
-    
-    public BlockBFS(World _world, BlockPos _initial) {
-        world = _world;
-        initial = _initial;
-    }
-    
-    public BlockPos runBFS() {
+    public static BlockPos runBFS(World world, BlockPos initial) {
     
         HashSet<BlockPos> visited = new HashSet<>();
         Queue<BlockPos> queue = new LinkedList<>();
@@ -35,14 +25,13 @@ public class BlockBFS {
             }
             
             // check current
-            if (isPosValid(current)) {
+            if (isPosValid(world, current)) {
                 return current;
             }
             
             // check distance
             if (!current.isWithinDistance(initial, 128)) {
-                BlockBFS spawn = new BlockBFS(world, world.getSpawnPos());
-                return spawn.runBFS();
+                return null;
             }
             
             // get neighbors
@@ -57,7 +46,7 @@ public class BlockBFS {
     
     }
     
-    public static boolean isPosValid(BlockPos pos) {
+    public static boolean isPosValid(World world, BlockPos pos) {
         boolean occupiedIsReplaceable = world.getBlockState(pos).isIn(BlockTags.REPLACEABLE);
         boolean groundIsNotReplaceable = !(world.getBlockState(pos).isIn(BlockTags.REPLACEABLE));
         return (occupiedIsReplaceable && groundIsNotReplaceable);
